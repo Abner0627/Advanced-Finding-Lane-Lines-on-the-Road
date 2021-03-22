@@ -10,62 +10,48 @@ import matplotlib.pyplot as plt
 import cv2
 import os
 
+#%% Func.
+def perspective(img, src, dst):
+    img_size = (img.shape[1], img.shape[0])
+    M = cv2.getPerspectiveTransform(src, dst)
+    warped = cv2.warpPerspective(img, M, img_size) 
+    
+    return warped
+
 #%% Load pic 
 P = './data'
 F = 'test02.jpg'
 img = cv2.imread(os.path.join(P, F))
 # plt.imshow(img_gray, cmap="gray")
 
-# convert to hls
-img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-img_gaus = cv2.GaussianBlur(img_gray,(5,5),0)
+sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=5)
+sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=5)
 
-# Canny on straight_1
-# Use the lightness layer to detect lines
-low_thresh = 50
-high_thresh = 150
+absX = cv2.convertScaleAbs(sobelx)
+absY = cv2.convertScaleAbs(sobely)
 
+dst_f = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
+dst_f = cv2.cvtColor(dst_f, cv2.COLOR_BGR2GRAY)
 
-minLineLength = 100
-maxLineGap = 10
+# plt.imshow(dst_f, cmap="gray")
 
-# Lightness thresholding (returns less points than saturation thresholding, gives better representation of lane lines)
-edges_lightness = cv2.Canny(img_gaus, high_thresh, low_thresh)
-lines = cv2.HoughLinesP(edges_lightness, 1, np.pi/180, 150, None, minLineLength, maxLineGap)
-
-Lhs = np.zeros((2, 2), dtype = np.float32)
-Rhs = np.zeros((2, 1), dtype = np.float32)
-x_max = 0
-x_min = 2555
-for line in lines:
-    for x1, y1, x2, y2 in line:
-        # Find the norm (the distances between the two points)
-        normal = np.array([[-(y2-y1)], [x2-x1]], dtype = np.float32) # question about this implementation
-        normal = normal / np.linalg.norm(normal)
+src = np.float32(
+            [[280,  700],  # Bottom left
+             [595,  460],  # Top left
+             [725,  460],  # Top right
+             [1125, 700]]) # Bottom right
         
-        pt = np.array([[x1], [y1]], dtype = np.float32)
-        
-        outer = np.matmul(normal, normal.T)
-        
-        Lhs += outer
-        Rhs += np.matmul(outer, pt) #use matmul for matrix multiply and not dot product
+dst = np.float32(
+            [[250,  720],  # Bottom left
+             [250,    0],  # Top left
+             [1065,   0],  # Top right
+             [1065, 720]]) # Bottom right   
 
-        cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), thickness = 1)
-        
-        x_iter_max = max(x1, x2)
-        x_iter_min = min(x1, x2)
-        x_max = max(x_max, x_iter_max)
-        x_min = min(x_min, x_iter_min)
 
-width = x_max - x_min
-print('width : ', width)
-# Calculate Vanishing Point
-vp = np.matmul(np.linalg.inv(Lhs), Rhs)
+offset =50
 
-print('vp is : ', vp)
-plt.plot(vp[0], vp[1], 'c^')
-plt.imshow(img)
-plt.title('Vanishing Point visualization')
 
+A = perspective(img)
+plt.imshow(A, cmap="gray")
 
 plt.show()
