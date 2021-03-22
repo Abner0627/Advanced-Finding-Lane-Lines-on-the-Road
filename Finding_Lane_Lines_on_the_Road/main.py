@@ -11,12 +11,16 @@ import cv2
 import os
 
 #%% Func.
-def perspective(img, src, dst):
+def _perspective(img, src, dst):
     img_size = (img.shape[1], img.shape[0])
     M = cv2.getPerspectiveTransform(src, dst)
     warped = cv2.warpPerspective(img, M, img_size) 
-    
     return warped
+
+def _filter(img, bL, bR):
+    A = np.zeros((img.shape[0], img.shape[1]))
+    A[:, 235:811] = img_trans[:, bL:(bR+1)]
+    return A
 
 #%% Load pic 
 P = './data'
@@ -53,12 +57,14 @@ dst = np.float32(
 # dist2 = np.sqrt((810-570)^2 + (490-375)^2)
 # print(dist2)
 
-img_trans = perspective(dst_f, src, dst)
+img_trans = _perspective(dst_f, src, dst)
 
-# fig, ax = plt.subplots(1,3)
+# fig, ax = plt.subplots(2,1)
 # ax[0].imshow(img)
 # ax[1].imshow(img_trans)
-# ax[2].imshow(img)
 # plt.tight_layout()
 
-# plt.show()
+#%% Find Line
+img_filter = _filter(img_trans, 235, 810)
+plt.imshow(img_filter)
+plt.show()
