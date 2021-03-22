@@ -24,34 +24,41 @@ F = 'test02.jpg'
 img = cv2.imread(os.path.join(P, F))
 # plt.imshow(img_gray, cmap="gray")
 
-sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=5)
-sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=5)
+#%% Sobel filter
+img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+sobelx = cv2.Sobel(img_gray, cv2.CV_64F, 1, 0, ksize=3)
+sobely = cv2.Sobel(img_gray, cv2.CV_64F, 0, 1, ksize=3)
 
 absX = cv2.convertScaleAbs(sobelx)
 absY = cv2.convertScaleAbs(sobely)
 
 dst_f = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
-dst_f = cv2.cvtColor(dst_f, cv2.COLOR_BGR2GRAY)
-
 # plt.imshow(dst_f, cmap="gray")
 
+#%% Transform
 src = np.float32(
-            [[280,  700],  # Bottom left
-             [595,  460],  # Top left
-             [725,  460],  # Top right
-             [1125, 700]]) # Bottom right
-        
+            [[235, 490],  # Bottom left
+             [375, 375],  # Top left
+             [570, 375],  # Top right
+             [810, 490]]) # Bottom right
+
 dst = np.float32(
-            [[250,  720],  # Bottom left
-             [250,    0],  # Top left
-             [1065,   0],  # Top right
-             [1065, 720]]) # Bottom right   
+            [[235, 490],  # Bottom left
+             [235, 0],  # Top left
+             [810, 0],  # Top right
+             [810, 490]]) # Bottom right   
 
+# dist1 = np.sqrt((375-235)^2 + (490-375)^2)
+# print(dist1)
+# dist2 = np.sqrt((810-570)^2 + (490-375)^2)
+# print(dist2)
 
-offset =50
+img_trans = perspective(dst_f, src, dst)
 
+# fig, ax = plt.subplots(1,3)
+# ax[0].imshow(img)
+# ax[1].imshow(img_trans)
+# ax[2].imshow(img)
+# plt.tight_layout()
 
-A = perspective(img)
-plt.imshow(A, cmap="gray")
-
-plt.show()
+# plt.show()
