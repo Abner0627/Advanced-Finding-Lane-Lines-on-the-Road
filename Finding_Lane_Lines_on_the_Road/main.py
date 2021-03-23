@@ -105,6 +105,7 @@ def find_lane_pixels(binary_warped):
 
     return leftx, lefty, rightx, righty, out_img
 
+
 #%% Load pic 
 P = './data'
 F = 'test02.jpg'
@@ -149,7 +150,15 @@ img_trans, M_inv = _perspective(dst_f, src, dst)
 
 #%% Find Line
 leftx, lefty, rightx, righty, out_img = find_lane_pixels(img_trans)
-print(leftx)
+ploty = np.linspace(0, img_trans.shape[0]-1, img_trans.shape[0] )
 
-plt.imshow(out_img)
+left_fit = np.polyfit(lefty, leftx, 2)
+right_fit = np.polyfit(righty, rightx, 2)
+
+left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
+right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
+
+plt.plot(left_fitx, ploty)
+plt.plot(right_fitx, ploty)
+plt.imshow(img_trans)
 plt.show()
