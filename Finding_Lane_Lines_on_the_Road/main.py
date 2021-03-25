@@ -4,7 +4,6 @@ Created on Fri Mar 19 16:38:45 2021
 
 @author: Lab
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
@@ -32,7 +31,7 @@ dst = np.float32(
 img_size = (img.shape[1], img.shape[0])
 M = cv2.getPerspectiveTransform(src, dst)
 M_inv = cv2.getPerspectiveTransform(dst, src)
-img_warped = cv2.warpPerspective(img, M, img_size)  
+img_warped = cv2.warpPerspective(img, M, img_size) 
 
 #%% Binary
 gray_img =cv2.cvtColor(img_warped, cv2.COLOR_BGR2GRAY)
@@ -40,6 +39,9 @@ sobelx = cv2.Sobel(gray_img, cv2.CV_64F, 1, 0)
 abs_sobelx = np.absolute(sobelx)
 # Scale result to 0-255
 scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+
+fig_0 = plt.figure(0)
+plt.imshow(scaled_sobel)
 
 sx_binary = np.zeros_like(scaled_sobel)
 # Keep only derivative values that are in the margin of interest
@@ -51,12 +53,12 @@ white_binary[(gray_img > 150) & (gray_img <= 255)] = 1
 binary_warped = cv2.bitwise_or(sx_binary, white_binary)
 
 #%% Histogram & laneBase
+# Take a histogram of the bottom half of the image
 histogram = np.sum(binary_warped, axis=0)
 
 midpoint = int(histogram.shape[0]//2)
 leftx_base = np.argmax(histogram[:midpoint])
 rightx_base = np.argmax(histogram[midpoint:]) + midpoint
-
 laneBase = [leftx_base, rightx_base]
 
 #%% Window
@@ -96,16 +98,11 @@ for n_lane in range(len(laneBase)):
             y_point.extend(y_Nz)
             laneCurrent = int(np.mean(x_Nz, axis=0))
             
-        # Draw the windows on the visualization image
-        cv2.rectangle(window_img, (x_range_L, y_range_B), (x_range_R, y_range_T), (0,255,0), 2)
-        
         # 擬合二次曲線
         if len(y_point) > 0:     
             fit = np.polyfit(y_point, x_point, 2)
             # 轉換為點
             laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
-
-img_add = cv2.addWeighted(window_img, 0.6, out_img, 1, 0)
 
 #%% Line
 width = 7
@@ -118,7 +115,6 @@ for line_x in laneLine_x:
     if np.abs(line_x[0] - line_x[len(line_x)//2]) > threshold:
         continue
 
-
     # 線段左邊界
     lineWindow1 = np.expand_dims(np.vstack([line_x - width, laneLine_y]).T, axis=0)
     # 線段右邊界
@@ -130,7 +126,7 @@ for line_x in laneLine_x:
 
 #%% Result
 weight = cv2.warpPerspective(line_img, M_inv, (img.shape[1], img.shape[0]))
-result = cv2.addWeighted(weight, 1, img, 1, 0)
+result = cv2.addWeighted(img, 1, weight, 1, 0)
 
 plt.imshow(result)
 plt.show()
