@@ -5,13 +5,14 @@ import os
 
 #%% Load video
 P = './data'
-V = 'challenge.mp4'
+V = 'tw_NH1.mp4'
 cap = cv2.VideoCapture(os.path.join(P, V))
- 
+i=0
 while(cap.isOpened()):
     ret, frame = cap.read()
     vd = frame
     break
+
 fig_0 = plt.figure(0)
 plt.imshow(vd)
 plt.show()
@@ -60,3 +61,18 @@ dst = np.float32(
              [1080, 0],  # Top right
              [1080, 666]]) # Bottom right
 '''
+
+#%% tw_NH1.mp4
+'''
+src = np.float32(
+            [[280, 1080],  # Bottom left
+             [709, 780],  # Top left
+             [1162, 780],  # Top right
+             [1730, 1080]]) # Bottom right
+
+dst = np.float32(
+            [[280, 1080],  # Bottom left
+             [280, 0],  # Top left
+             [1730, 0],  # Top right
+             [1730, 1080]]) # Bottom right
+''' 
