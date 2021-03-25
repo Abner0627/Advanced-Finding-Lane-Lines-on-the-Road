@@ -61,12 +61,14 @@ laneBase = [leftx_base, rightx_base]
 
 #%% Window
 nwindows = 9
-margin = 50
+margin = 40
 minpixel = 50
 
 out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
 window_img = np.zeros_like(out_img)
 line_img = np.zeros_like(out_img)
+laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
+laneLine_x = np.zeros([2, binary_warped.shape[0]])
 for n_lane in range(len(laneBase)): 
     window_height = int(binary_warped.shape[0]//nwindows)
     x_point = []
@@ -96,11 +98,7 @@ for n_lane in range(len(laneBase)):
             
         # Draw the windows on the visualization image
         cv2.rectangle(window_img, (x_range_L, y_range_B), (x_range_R, y_range_T), (0,255,0), 2)
-
-        # 儲存線段空間
-        laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
-        laneLine_x = np.ones([4, binary_warped.shape[0]]) * np.inf
-
+        
         # 擬合二次曲線
         if len(y_point) > 0:     
             fit = np.polyfit(y_point, x_point, 2)
@@ -115,9 +113,9 @@ threshold = 60
 for line_x in laneLine_x:
     if np.abs(line_x[-1]-line_x[0]) > threshold:
         continue
-    elif np.abs(line_x[-1] - line_x[len(line_x)//2]) > threshold:
+    if np.abs(line_x[-1] - line_x[len(line_x)//2]) > threshold:
         continue
-    elif np.abs(line_x[0] - line_x[len(line_x)//2]) > threshold:
+    if np.abs(line_x[0] - line_x[len(line_x)//2]) > threshold:
         continue
 
 
@@ -128,11 +126,11 @@ for line_x in laneLine_x:
     linePts = np.hstack((lineWindow1, lineWindow2))
 
     # 使用 openCV 填上曲線間區域
-    cv2.fillPoly(line_img, np.int32([linePts]), (255, 0, 0))
+    cv2.fillPoly(line_img, np.int32([linePts]), (0, 0, 255))
 
 #%% Result
 weight = cv2.warpPerspective(line_img, M_inv, (img.shape[1], img.shape[0]))
-result = cv2.addWeighted(img, 1, weight, 0.9, 0)
+result = cv2.addWeighted(weight, 1, img, 1, 0)
 
 plt.imshow(result)
 plt.show()
