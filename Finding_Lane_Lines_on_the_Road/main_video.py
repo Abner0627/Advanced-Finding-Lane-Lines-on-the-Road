@@ -23,13 +23,14 @@ for idx in range(frame_count):
     vc.set(1, idx)
     ret, frame = vc.read()
     if frame is not None:
+        print('=====Frame >> ' + str(idx) + '/' + str(frame_count) + '=====', "\r" , end=' ')
         img = frame
         # img = img[:,:,[2,1,0]]
 #%% Transform
         src = np.float32(
                     [[153, 540],  # Bottom left
-                    [300, 430],  # Top left
-                    [692, 430],  # Top right
+                    [430, 337],  # Top left
+                    [536, 337],  # Top right
                     [872, 540]]) # Bottom right
 
         dst = np.float32(
@@ -49,9 +50,6 @@ for idx in range(frame_count):
         abs_sobelx = np.absolute(sobelx)
         # Scale result to 0-255
         scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
-
-        fig_0 = plt.figure(0)
-        plt.imshow(scaled_sobel)
 
         sx_binary = np.zeros_like(scaled_sobel)
         # Keep only derivative values that are in the margin of interest
@@ -73,18 +71,21 @@ for idx in range(frame_count):
 
 #%% Window
         nwindows = 9
-        margin = 40
-        minpixel = 50
+        margin = 50
+        minpixel = 10
+
+        window_height = np.int32(binary_warped.shape[0]//nwindows)
+        laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
+        laneLine_x = np.ones([4, binary_warped.shape[0]]) * -10
 
         out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
         window_img = np.zeros_like(out_img)
         line_img = np.zeros_like(out_img)
-        laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
-        laneLine_x = np.zeros([2, binary_warped.shape[0]])
+
         for n_lane in range(len(laneBase)): 
-            window_height = int(binary_warped.shape[0]//nwindows)
             x_point = []
             y_point = []
+            
             laneCurrent = laneBase[n_lane]
             for n_window in range(nwindows):
                 x_range_L = laneCurrent - margin
@@ -94,10 +95,10 @@ for idx in range(frame_count):
                 if x_range_R >= binary_warped.shape[1]:
                     x_range_R = binary_warped.shape[1] - 1
 
-                y_range_B = binary_warped.shape[0] - (n_window+1)*window_height
-                y_range_T = binary_warped.shape[0] - n_window*window_height
+                y_range_T = binary_warped.shape[0] - (n_window+1)*window_height
+                y_range_B = binary_warped.shape[0] - n_window*window_height
 
-                window = binary_warped[y_range_B:y_range_T, x_range_L:x_range_R]
+                window = binary_warped[y_range_T:y_range_B, x_range_L:x_range_R]
 
                 y_Nz, x_Nz = np.nonzero(window)
                 x_Nz = x_Nz + x_range_L
@@ -106,17 +107,19 @@ for idx in range(frame_count):
                 if np.count_nonzero(window) > minpixel:
                     x_point.extend(x_Nz)
                     y_point.extend(y_Nz)
-                    laneCurrent = int(np.mean(x_Nz, axis=0))
-                    
-                # 擬合二次曲線
-                if len(y_point) > 0:     
-                    fit = np.polyfit(y_point, x_point, 2)
-                    # 轉換為點
-                    laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
+                    laneCurrent = np.mean(x_Nz, axis=0, dtype=np.int32)
+
+                cv2.rectangle(window_img, (x_range_L, y_range_T), (x_range_R, y_range_B), (0,255,0), 2) 
+
+#%% Fitting
+            if len(y_point) > 0:     
+                fit = np.polyfit(y_point, x_point, 2)
+                # 轉換為點
+                laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
 
 #%% Line
-        width = 7
-        threshold = 60
+        width = 8
+        threshold = 100
         for line_x in laneLine_x:
             if np.abs(line_x[-1]-line_x[0]) > threshold:
                 continue
@@ -132,10 +135,11 @@ for idx in range(frame_count):
             linePts = np.hstack((lineWindow1, lineWindow2))
 
             # 使用 openCV 填上曲線間區域
-            cv2.fillPoly(line_img, np.int32([linePts]), (0, 0, 255))
+            cv2.fillPoly(line_img, np.int32([linePts]), (255,0,0))
 
 #%% Result
         weight = cv2.warpPerspective(line_img, M_inv, (img.shape[1], img.shape[0]))
+        weight = weight[:,:,[2,1,0]]
         result = cv2.addWeighted(img, 1, weight, 1, 0)
 
         height, width, layers = result.shape
