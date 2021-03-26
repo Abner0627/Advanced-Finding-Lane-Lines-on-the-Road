@@ -2,7 +2,7 @@
 
 ## Github
 
-[<img src=https://i.imgur.com/3aZfqpy.png width=25% />](https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_Lane_Lines_on_the_Road)
+[<img src=https://i.imgur.com/3aZfqpy.png width=20% />](https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_Lane_Lines_on_the_Road)
 
 ## 作業目標
 
