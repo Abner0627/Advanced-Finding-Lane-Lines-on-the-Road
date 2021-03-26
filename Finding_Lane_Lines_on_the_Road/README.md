@@ -67,8 +67,8 @@ video = []  # 建立list用以存放處理好的影格
 
 ```py
 '''
-img為影片之每幀影格
-src與dst為透視變換之端點，M為變換矩陣，依不同影片視角有所不同，詳見下方說明
+img  為影片之每幀影格
+src  與dst為透視變換之端點，M為變換矩陣，依不同影片視角有所不同，詳見下方說明
 '''
 
 img_size = (img.shape[1], img.shape[0])
@@ -97,8 +97,8 @@ sx_binary[(scaled_sobel >= 30) & (scaled_sobel <= 255)] = 1
 white_binary = np.zeros_like(gray_img)  # 將灰階圖二元化
 white_binary[(gray_img > 150) & (gray_img <= 255)] = 1
 
-binary_warped = cv2.bitwise_or(sx_binary, white_binary)  
 # 結合上述結果進行 OR 運算
+binary_warped = cv2.bitwise_or(sx_binary, white_binary)  
 ```
 
 <img src=https://i.imgur.com/S0fdLPo.png width=60%>
@@ -118,4 +118,50 @@ laneBase = [leftx_base, rightx_base]
 
 <img src=https://i.imgur.com/ygMAndt.png width=60%>
 
+接著由上而下，將圖片切割為數個區塊
+
+```py
+'''
+nwindows  為區塊數量
+margin    為區塊寬度
+minpixel  為判斷該區塊之像素點數量是否用於擬合之閥值
+'''
+# 初始化區塊高度以及用於擬合之x、y變數
+window_height = np.int32(binary_warped.shape[0]//nwindows)
+laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
+laneLine_x = np.ones([4, binary_warped.shape[0]]) * -10
+# 初始化用於畫上擬合線的陣列
+out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
+line_img = np.zeros_like(out_img)
+
+for n_lane in range(len(laneBase)): 
+    x_point = []
+    y_point = []
+    laneCurrent = laneBase[n_lane]  # 目前車道邊線之x座標
+    for n_window in range(nwindows):
+        # 判斷區塊之x方向範圍        
+        x_range_L = laneCurrent - margin
+        x_range_R = laneCurrent + margin
+        if x_range_L < 0:
+            x_range_L = 0
+        if x_range_R >= binary_warped.shape[1]:
+            x_range_R = binary_warped.shape[1] - 1
+        # 判斷區塊之y方向範圍
+        y_range_T = binary_warped.shape[0] - (n_window+1)*window_height
+        y_range_B = binary_warped.shape[0] - n_window*window_height
+        # 擷取區塊
+        window = binary_warped[y_range_T:y_range_B, x_range_L:x_range_R]
+        # 取得區塊中非像素點之座標
+        y_Nz, x_Nz = np.nonzero(window)
+        x_Nz = x_Nz + x_range_L
+        y_Nz = y_Nz + y_range_B
+        # 若像素點數量大於閥值則將其儲存
+        if np.count_nonzero(window) > minpixel:
+            x_point.extend(x_Nz)
+            y_point.extend(y_Nz)
+            # 更新目前車道邊線之x座標
+            laneCurrent = np.mean(x_Nz, axis=0, dtype=np.int32
+```
+
+<img src=https://i.imgur.com/9VPKPC9.png width=60%>
 
