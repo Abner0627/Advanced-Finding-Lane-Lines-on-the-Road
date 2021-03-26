@@ -85,9 +85,15 @@ for idx in range(frame_count):
         laneBase = [leftx_base, rightx_base]
 
 #%% Window
-        nwindows = 9
-        margin = 50
-        minpixel = 10
+
+        if args.video == 'tw_NH1':
+            nwindows = 9
+            margin = 50
+            minpixel = 50   
+        else:
+            nwindows = 9
+            margin = 50
+            minpixel = 10 
 
         window_height = np.int32(binary_warped.shape[0]//nwindows)
         laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
@@ -133,8 +139,13 @@ for idx in range(frame_count):
                 laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
 
 #%% Line
-        width = 8
-        threshold = 150
+        if args.video == 'tw_NH1':
+            width = 15
+            threshold = 200            
+        else:
+            width = 8
+            threshold = 150
+            
         for line_x in laneLine_x:
             if np.abs(line_x[-1]-line_x[0]) > threshold:
                 continue
