@@ -35,4 +35,16 @@ solidYellowLeft_dst = np.float32(
             [[100, 540],  # Bottom left
              [100, 0],  # Top left
              [840, 0],  # Top right
-             [840, 540]]) # Bottom right             
+             [840, 540]]) # Bottom right 
+#======================
+tw_NH1_src = np.float32(
+            [[280, 1080],  # Bottom left
+             [709, 780],  # Top left
+             [1162, 780],  # Top right
+             [1730, 1080]]) # Bottom right
+
+tw_NH1_dst = np.float32(
+            [[280, 1080],  # Bottom left
+             [280, 0],  # Top left
+             [1730, 0],  # Top right
+             [1730, 1080]]) # Bottom right                         

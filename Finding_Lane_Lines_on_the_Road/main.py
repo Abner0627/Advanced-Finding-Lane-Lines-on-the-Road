@@ -46,7 +46,10 @@ for idx in range(frame_count):
             dst = config.challenge_dst  
         elif args.video == 'solidYellowLeft':
             src = config.solidYellowLeft_src
-            dst = config.solidYellowLeft_dst                         
+            dst = config.solidYellowLeft_dst   
+        elif args.video == 'tw_NH1':
+            src = config.tw_NH1_src
+            dst = config.tw_NH1_dst                                    
         else:
             print('Wrong file name')
             break
