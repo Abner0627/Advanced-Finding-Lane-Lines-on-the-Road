@@ -89,7 +89,7 @@ for idx in range(frame_count):
         if args.video == 'tw_NH1':
             nwindows = 9
             margin = 50
-            minpixel = 50   
+            minpixel = 120   
         else:
             nwindows = 9
             margin = 50
@@ -140,12 +140,12 @@ for idx in range(frame_count):
 
 #%% Line
         if args.video == 'tw_NH1':
-            width = 15
-            threshold = 200            
+            width = 8
+            threshold = 50            
         else:
             width = 8
             threshold = 150
-            
+
         for line_x in laneLine_x:
             if np.abs(line_x[-1]-line_x[0]) > threshold:
                 continue
