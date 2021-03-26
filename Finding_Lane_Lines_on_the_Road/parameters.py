@@ -5,7 +5,7 @@ import os
 
 #%% Load video
 P = './data'
-V = 'tw_NH1.mp4'
+V = 'solidWhiteRight.mp4'
 cap = cv2.VideoCapture(os.path.join(P, V))
 i=0
 while(cap.isOpened()):
@@ -21,8 +21,8 @@ plt.show()
 '''
 src = np.float32(
             [[153, 540],  # Bottom left
-             [300, 430],  # Top left
-             [692, 430],  # Top right
+             [430, 337],  # Top left
+             [536, 337],  # Top right
              [872, 540]]) # Bottom right
 
 dst = np.float32(
