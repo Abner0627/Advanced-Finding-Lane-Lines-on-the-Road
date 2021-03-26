@@ -135,7 +135,7 @@ for idx in range(frame_count):
 #%% Fitting
             if len(y_point) > 0:     
                 fit = np.polyfit(y_point, x_point, 2)
-                # 轉換為點
+
                 laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
 
 #%% Line
@@ -154,13 +154,13 @@ for idx in range(frame_count):
             if np.abs(line_x[0] - line_x[len(line_x)//2]) > threshold:
                 continue
 
-            # 線段左邊界
+            # Left boundary of line
             lineWindow1 = np.expand_dims(np.vstack([line_x - width, laneLine_y]).T, axis=0)
-            # 線段右邊界
+            # Right boundary of line
             lineWindow2 = np.expand_dims(np.flipud(np.vstack([line_x + width, laneLine_y]).T), axis=0)
             linePts = np.hstack((lineWindow1, lineWindow2))
 
-            # 使用 openCV 填上曲線間區域
+            # Fill the region
             cv2.fillPoly(line_img, np.int32([linePts]), (255,0,0))
 
 #%% Result
