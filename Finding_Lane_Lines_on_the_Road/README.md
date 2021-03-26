@@ -70,7 +70,6 @@ video = []  # 建立list用以存放處理好的影格
 img  為影片之每幀影格
 src  與dst為透視變換之端點，M為變換矩陣，依不同影片視角有所不同，詳見下方說明
 '''
-
 img_size = (img.shape[1], img.shape[0])
 M = cv2.getPerspectiveTransform(src, dst)
 M_inv = cv2.getPerspectiveTransform(dst, src)
@@ -86,17 +85,18 @@ img_warped = cv2.warpPerspective(img, M, img_size)
 ### Step 3 將圖片二元化後進行邊緣偵測
 
 ```py
-gray_img =cv2.cvtColor(img_warped, cv2.COLOR_BGR2GRAY)  # 灰階化
-sobelx = cv2.Sobel(gray_img, cv2.CV_64F, 1, 0)  # 使用Sobel濾波，過濾x方向紋路
+# 灰階化
+gray_img =cv2.cvtColor(img_warped, cv2.COLOR_BGR2GRAY)  
+# 使用Sobel濾波，過濾x方向紋路
+sobelx = cv2.Sobel(gray_img, cv2.CV_64F, 1, 0)  
 abs_sobelx = np.absolute(sobelx)
 scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
-
-sx_binary = np.zeros_like(scaled_sobel)  # 將Sobel濾波結果二元化
+# 將Sobel濾波結果二元化
+sx_binary = np.zeros_like(scaled_sobel)  
 sx_binary[(scaled_sobel >= 30) & (scaled_sobel <= 255)] = 1
-
-white_binary = np.zeros_like(gray_img)  # 將灰階圖二元化
+# 將灰階圖二元化
+white_binary = np.zeros_like(gray_img)  
 white_binary[(gray_img > 150) & (gray_img <= 255)] = 1
-
 # 結合上述結果進行 OR 運算
 binary_warped = cv2.bitwise_or(sx_binary, white_binary)  
 ```
@@ -161,7 +161,57 @@ for n_lane in range(len(laneBase)):
             y_point.extend(y_Nz)
             # 更新目前車道邊線之x座標
             laneCurrent = np.mean(x_Nz, axis=0, dtype=np.int32
+    # 進行擬合
+    if len(y_point) > 0:     
+        fit = np.polyfit(y_point, x_point, 2)
+        laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]            
 ```
 
 <img src=https://i.imgur.com/9VPKPC9.png width=60%>
 
+### Step 5 劃出車道邊線
+
+```py
+'''
+width     為邊線寬度
+threshold 為可容許之最大邊線間隔
+'''
+for line_x in laneLine_x:
+    if np.abs(line_x[-1]-line_x[0]) > threshold:
+        continue
+    if np.abs(line_x[-1] - line_x[len(line_x)//2]) > threshold:
+        continue
+    if np.abs(line_x[0] - line_x[len(line_x)//2]) > threshold:
+        continue
+    # 邊線左邊界
+    lineWindow1 = np.expand_dims(np.vstack([line_x - width, laneLine_y]).T, axis=0)
+    # 邊線右邊界
+    lineWindow2 = np.expand_dims(np.flipud(np.vstack([line_x + width, laneLine_y]).T), axis=0)
+    linePts = np.hstack((lineWindow1, lineWindow2))
+    # 填上曲線間區域
+    cv2.fillPoly(line_img, np.int32([linePts]), (255,0,0))
+```
+
+<img src=https://i.imgur.com/fr5X40q.png width=60%>
+
+### Step 6 將車道線疊合
+
+```py
+# 將上圖曲線再轉移至原視角
+weight = cv2.warpPerspective(line_img, M_inv, (img.shape[1], img.shape[0]))
+# 調整RGB並疊圖
+weight = weight[:,:,[2,1,0]]
+result = cv2.addWeighted(img, 1, weight, 1, 0)
+# 將結果加入list中
+height, width, layers = result.shape
+size = (width, height)
+video.append(result)
+vc.release()
+# 使用OpenCV儲存影片
+out = cv2.VideoWriter(os.path.join(sP, sV), cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
+for i in range(len(video)):
+    out.write(video[i])
+out.release()
+```
+
+<img src=https://i.imgur.com/nPh888r.png>
