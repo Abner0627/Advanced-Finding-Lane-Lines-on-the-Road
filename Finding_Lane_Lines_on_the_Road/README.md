@@ -20,16 +20,16 @@ https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_L
 ## 成果
 
 * solidWhiteRight (https://youtu.be/Rk7PWRhAPRc)
-    <img src=https://i.imgur.com/kr0yGSr.png width=60%>
+    <img src=https://i.imgur.com/iVbRRqD.gif width=60%>
     
 * solidYellowLeft (https://youtu.be/UKnnKqDSB44)
-    <img src=https://i.imgur.com/xq59RKI.png width=60%>
+    <img src=https://i.imgur.com/u1OZfgF.gif width=60%>
 
 * challenge (https://youtu.be/hv0lQcNjJhU)
-    <img src=https://i.imgur.com/R2UlzRV.png width=60%>
+    <img src=https://i.imgur.com/QE51enx.gif width=60%>
 
 * tw_NH1 (https://youtu.be/1OO51ng19L4)
-    <img src=https://i.imgur.com/ZLzCoSz.png width=60%>
+    <img src=https://i.imgur.com/7SxF4PV.gif width=60%>
 
 ## 作法
 
