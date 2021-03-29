@@ -43,7 +43,7 @@ https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
     * python 3.8.5
 
 2. 進入該專案之資料夾
-`cd /d [<YOUR PATH>/Practices-of-Autonomous-Driving/Finding_Lane_Lines_on_the_Road]`
+`cd /d [<YOUR PATH>/Finding-Lane-Lines-on-the-Road]`
 
 3. 安裝所需套件
 `pip install -r requirements.txt`
