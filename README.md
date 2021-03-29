@@ -2,9 +2,9 @@
 
 ## Github
 
-[<img src=https://i.imgur.com/3aZfqpy.png width=15%>](https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_Lane_Lines_on_the_Road)
+[<img src=https://i.imgur.com/3aZfqpy.png width=15%>](https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road)
 
-https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_Lane_Lines_on_the_Road
+https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
 
 ## 作業目標
 
@@ -39,8 +39,8 @@ https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_L
 ### Step 0 環境設定與套件安裝
 
 1. 使用環境：  
-* Win 10 
-* python 3.8.5
+    * Win 10 
+    * python 3.8.5
 
 2. 進入該專案之資料夾
 `cd /d [<YOUR PATH>/Practices-of-Autonomous-Driving/Finding_Lane_Lines_on_the_Road]`
@@ -51,12 +51,12 @@ https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_L
 4. 執行主要程式
 `python main.py -V [DATA NAME]`
 
-      * [DATA NAME]依處理的影片檔名而定，目前僅有存於`./data`中的影片可供使用。 
-          *  challenge
-          *  solidWhiteRight (defailt)
-          *  solidYellowLeft
-          *  tw_NH1
-      * 範例：`python main.py -V solidWhiteRight`
+    * [DATA NAME]依處理的影片檔名而定，目前僅有存於`./data`中的影片可供使用。 
+        *  challenge
+        *  solidWhiteRight (defailt)
+        *  solidYellowLeft
+        *  tw_NH1
+    * 範例：`python main.py -V solidWhiteRight`
 
 5. 確認輸出
    * 目前預設輸出資料夾為`./output`，檔名為`Lane_`+`影片名稱`。
