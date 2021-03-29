@@ -20,16 +20,16 @@ https://github.com/Abner0627/Practices-of-Autonomous-Driving/tree/main/Finding_L
 ## 成果
 
 * solidWhiteRight (https://youtu.be/Rk7PWRhAPRc)
-    ![white](https://i.imgur.com/nJ8kc1V.png)
+    ![white](/img/Lane_solidWhiteRight_Trim.png)
     
 * solidYellowLeft (https://youtu.be/UKnnKqDSB44)
-    ![yellow](https://i.imgur.com/5kiqn7x.png)
+    ![yellow](/img/Lane_solidYellowLeft_Trim.png)
 
 * challenge (https://youtu.be/hv0lQcNjJhU)
-    ![ch](https://i.imgur.com/yemyWMI.png)
+    ![ch](/img/Lane_challenge_Trim.png)
 
 * tw_NH1 (https://youtu.be/1OO51ng19L4)
-    ![NH1](https://i.imgur.com/5cO8osc.png)
+    ![NH1](/img/Lane_tw_NH1_Trim.png)
 
 ## 作法
 
