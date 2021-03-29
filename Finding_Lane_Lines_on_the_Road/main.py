@@ -67,13 +67,23 @@ for idx in range(frame_count):
         scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
 
         sx_binary = np.zeros_like(scaled_sobel)
-        # Keep only derivative values that are in the margin of interest
-        sx_binary[(scaled_sobel >= 30) & (scaled_sobel <= 255)] = 1
-        # Detect pixels that are white in the grayscale image
-        white_binary = np.zeros_like(gray_img)
-        white_binary[(gray_img > 150) & (gray_img <= 255)] = 1
-        # Combine all pixels detected above
-        binary_warped = cv2.bitwise_or(sx_binary, white_binary)
+        
+        if args.video == 'solidYellowLeft':
+            # Keep only derivative values that are in the margin of interest
+            sx_binary[(scaled_sobel >= 80) & (scaled_sobel <= 255)] = 1
+            # Detect pixels that are white in the grayscale image
+            white_binary = np.zeros_like(gray_img)
+            white_binary[(gray_img > 180) & (gray_img <= 255)] = 1
+            # Combine all pixels detected above
+            binary_warped = cv2.bitwise_or(sx_binary, white_binary)
+        else:
+            # Keep only derivative values that are in the margin of interest
+            sx_binary[(scaled_sobel >= 25) & (scaled_sobel <= 255)] = 1
+            # Detect pixels that are white in the grayscale image
+            white_binary = np.zeros_like(gray_img)
+            white_binary[(gray_img > 180) & (gray_img <= 255)] = 1
+            # Combine all pixels detected above
+            binary_warped = cv2.bitwise_or(sx_binary, white_binary)            
 
 #%% Histogram & laneBase
         # Take a histogram of the bottom half of the image
@@ -85,15 +95,15 @@ for idx in range(frame_count):
         laneBase = [leftx_base, rightx_base]
 
 #%% Window
-
         if args.video == 'tw_NH1':
             nwindows = 9
-            margin = 50
-            minpixel = 120   
+            margin = 20
+            minpixel = 10
+        
         else:
             nwindows = 9
             margin = 50
-            minpixel = 10 
+            minpixel = 10
 
         window_height = np.int32(binary_warped.shape[0]//nwindows)
         laneLine_y = np.linspace(0, binary_warped.shape[0]-1, binary_warped.shape[0])
@@ -140,14 +150,14 @@ for idx in range(frame_count):
 
 #%% Line
         if args.video == 'tw_NH1':
-            width = 8
-            threshold = 50            
+            width = 25
+            threshold = 250         
         else:
-            width = 8
+            width = 15
             threshold = 150
 
         for line_x in laneLine_x:
-            if np.abs(line_x[-1]-line_x[0]) > threshold:
+            if np.abs(line_x[-1]-line_x[0]) > 1000:
                 continue
             if np.abs(line_x[-1] - line_x[len(line_x)//2]) > threshold:
                 continue
@@ -164,6 +174,7 @@ for idx in range(frame_count):
             cv2.fillPoly(line_img, np.int32([linePts]), (255,0,0))
 
 #%% Result
+        line_img[:,:25,:] = 0
         weight = cv2.warpPerspective(line_img, M_inv, (img.shape[1], img.shape[0]))
         weight = weight[:,:,[2,1,0]]
         result = cv2.addWeighted(img, 1, weight, 1, 0)

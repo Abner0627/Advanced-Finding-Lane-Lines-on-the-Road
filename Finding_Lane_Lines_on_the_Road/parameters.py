@@ -66,8 +66,8 @@ dst = np.float32(
 '''
 src = np.float32(
             [[280, 1080],  # Bottom left
-             [709, 780],  # Top left
-             [1162, 780],  # Top right
+             [740, 760],  # Top left
+             [1123, 760],  # Top right
              [1730, 1080]]) # Bottom right
 
 dst = np.float32(
