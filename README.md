@@ -53,7 +53,7 @@ https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
 
     * [DATA NAME]依處理的影片檔名而定，目前僅有存於`./data`中的影片可供使用。 
         *  challenge
-        *  solidWhiteRight (defailt)
+        *  solidWhiteRight (default)
         *  solidYellowLeft
         *  tw_NH1
     * 範例：`python main.py -V solidWhiteRight`
