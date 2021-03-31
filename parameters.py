@@ -81,13 +81,13 @@ dst = np.float32(
 '''
 src = np.float32(
             [[300, 720],  # Bottom left
-             [500, 535],  # Top left
-             [680, 535],  # Top right
-             [1020, 720]]) # Bottom right
+             [500, 540],  # Top left
+             [680, 540],  # Top right
+             [1010, 720]]) # Bottom right
 
 dst = np.float32(
             [[300, 720],  # Bottom left
              [300, 0],  # Top left
-             [1020, 0],  # Top right
-             [1020, 720]]) # Bottom right
+             [1010, 0],  # Top right
+             [1010, 720]]) # Bottom right
 ''' 

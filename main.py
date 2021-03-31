@@ -98,11 +98,14 @@ for idx in range(frame_count):
         laneBase = [leftx_base, rightx_base]
 
 #%% Window
-        if args.video == 'tw_NH1' or args.video == 'tw_NH3':
+        if args.video == 'tw_NH1':
             nwindows = 9
             margin = 20
             minpixel = 10
-        
+        elif args.video == 'tw_NH3':
+            nwindows = 9
+            margin = 50
+            minpixel = 50         
         else:
             nwindows = 9
             margin = 50
@@ -152,9 +155,12 @@ for idx in range(frame_count):
                 laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
 
 #%% Line
-        if args.video == 'tw_NH1' or args.video == 'tw_NH3':
+        if args.video == 'tw_NH1':
             width = 25
-            threshold = 250         
+            threshold = 250 
+        elif args.video == 'tw_NH3':
+            width = 25
+            threshold = 200             
         else:
             width = 15
             threshold = 150
