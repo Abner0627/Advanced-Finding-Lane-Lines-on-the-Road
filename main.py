@@ -49,7 +49,10 @@ for idx in range(frame_count):
             dst = config.solidYellowLeft_dst   
         elif args.video == 'tw_NH1':
             src = config.tw_NH1_src
-            dst = config.tw_NH1_dst                                    
+            dst = config.tw_NH1_dst
+        elif args.video == 'tw_NH3':
+            src = config.tw_NH3_src
+            dst = config.tw_NH3_dst                                                
         else:
             print('Wrong file name')
             break
@@ -95,7 +98,7 @@ for idx in range(frame_count):
         laneBase = [leftx_base, rightx_base]
 
 #%% Window
-        if args.video == 'tw_NH1':
+        if args.video == 'tw_NH1' or args.video == 'tw_NH3':
             nwindows = 9
             margin = 20
             minpixel = 10
@@ -149,7 +152,7 @@ for idx in range(frame_count):
                 laneLine_x[n_lane, :] = fit[0] * laneLine_y**2 + fit[1] * laneLine_y + fit[2]
 
 #%% Line
-        if args.video == 'tw_NH1':
+        if args.video == 'tw_NH1' or args.video == 'tw_NH3':
             width = 25
             threshold = 250         
         else:

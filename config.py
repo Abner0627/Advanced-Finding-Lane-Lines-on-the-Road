@@ -47,4 +47,16 @@ tw_NH1_dst = np.float32(
             [[280, 1080],  # Bottom left
              [280, 0],  # Top left
              [1730, 0],  # Top right
-             [1730, 1080]]) # Bottom right                         
+             [1730, 1080]]) # Bottom right   
+#======================
+tw_NH3_src = np.float32(
+            [[300, 720],  # Bottom left
+             [500, 535],  # Top left
+             [680, 535],  # Top right
+             [1020, 720]]) # Bottom right
+
+tw_NH3_dst = np.float32(
+            [[300, 720],  # Bottom left
+             [300, 0],  # Top left
+             [1020, 0],  # Top right
+             [1020, 720]]) # Bottom right                        
