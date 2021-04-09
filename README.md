@@ -15,7 +15,8 @@ https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
 1. [Udacity Test Video - solidWhiteRight](https://github.com/udacity/CarND-LaneLines-P1/blob/master/test_videos/solidWhiteRight.mp4)
 2. [Udacity Test Video - solidYellowLeft](https://github.com/udacity/CarND-LaneLines-P1/blob/master/test_videos/solidYellowLeft.mp4)
 3. [Udacity Test Video - challenge](https://github.com/udacity/CarND-LaneLines-P1/blob/master/test_videos/challenge.mp4)
-4. [國道一號 中山高速公路 北向 高雄-基隆 374K-0K 全程 路程景National Highway No. 1 - Youtube ](https://www.youtube.com/watch?v=0crwED4yhBA)
+4. [國道一號 中山高速公路 北向 高雄-基隆 374K-0K 全程 路程景National Highway No. 1](https://www.youtube.com/watch?v=0crwED4yhBA)
+5. [國道3號 福爾摩沙高速公路 屏東 - 基隆 431.5k - 0k 北向 全程 路程景](https://www.youtube.com/watch?v=xgqjxX_68-w)
 
 ## 成果
 
@@ -31,6 +32,9 @@ https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
 * tw_NH1 (https://youtu.be/1OO51ng19L4)
     ![NH1](/img/Lane_tw_NH1_Trim.png)
 
+* tw_NH3 (https://youtu.be/KH_kjyFpE14)
+    ![NH3](/img/Lane_tw_NH3_Trim.png)    
+
 ## 作法
 
 >主要參考自下列專案：
@@ -43,7 +47,7 @@ https://github.com/Abner0627/Finding-Lane-Lines-on-the-Road
     * python 3.8.5
 
 2. 進入該專案之資料夾
-`cd /d [<YOUR PATH>/Finding-Lane-Lines-on-the-Road]`
+`cd /d [path/to/this/project]`
 
 3. 安裝所需套件
 `pip install -r requirements.txt`
